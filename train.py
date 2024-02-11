@@ -18,7 +18,10 @@ from models import Network
 from combined_loss import ReconstructionLoss
 from dataset import get_loader
 
-config = Config.from_json(file_path="train_config.json")
+torch.backends.cuda.matmul.allow_tf32 = True
+torch.backends.cudnn.allow_tf32 = True
+
+config = Config.from_json(file_path="final_train_config.json")
 print(config)
 ckpt = None
 batch_size = config.batch_size
@@ -178,6 +181,7 @@ wandb.config = {
     **config.to_dict()
 }
 
+os.makedirs(config.model_save_path, exist_ok=True)
 print("Training Started")
 start_epoch = getattr(config, "start_epoch", 0)
 epoch_progress = tqdm.tqdm(range(start_epoch, config.num_epochs), total=config.num_epochs, leave=True, position=0)
@@ -200,11 +204,12 @@ for epoch in epoch_progress:
 
     epoch_progress.set_description(f"Epoch {epoch + 1}/{config.num_epochs} - train_loss: {train_loss:.4f}")
 
+os.makedirs("final_model_checkpoints", exist_ok=True)
 torch.save({
     'epoch': config.num_epochs,
     'model_state_dict': model.state_dict(),
     'optimizer_state_dict': optimizer.state_dict(),
     'wandb_run_id': wandb.run.id
-}, f"final_checkpoints/checkpoint_FINAL_{config.num_epochs}.pt")
+}, f"final_model_checkpoints/checkpoint_FINAL_{config.num_epochs}.pt")
 
 wandb.finish()

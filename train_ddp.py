@@ -24,6 +24,9 @@ from models import Network
 from combined_loss import ReconstructionLoss
 from dataset import TrainObjaverseDataset, ValidObjaverseDataset
 
+torch.backends.cuda.matmul.allow_tf32 = True
+torch.backends.cudnn.allow_tf32 = True
+
 
 def main(config, local_rank, rank):
     if local_rank == 0:
@@ -31,9 +34,9 @@ def main(config, local_rank, rank):
         print(config)
 
     ckpt = None
-    batch_size = 4
-    learning_rate = 4e-4
-    weight_decay = 0.005
+    batch_size = config.batch_size
+    learning_rate = config.learning_rate
+    weight_decay = config.weight_decay
     beta2 = 0.95
     fx = fy = config.focal_length
     px = py = config.principal_point
@@ -61,12 +64,13 @@ def main(config, local_rank, rank):
     model = Network(config.camera_embed_dim, config.decoder_hidden_dim, config.num_layers, config.num_heads,
                     config.triplane_feat_res, config.triplane_res, config.triplane_dim,
                     config.rendering_samples_per_ray,
-                    config.camera_matrix_dim)
+                    config.camera_matrix_dim).to(device)
 
-    if config.model_save_path and os.path.exists(config.model_save_path):
+    if config.model_save_path and os.path.exists(config.model_save_path) and len(
+            glob(f"{config.model_save_path}/*.pt")) > 0:
         if config.model_preloading_strategy == "latest":
             print("Preloading model from latest checkpoint")
-            ckpt_path = glob(f"{config.model_save_path}/*.pt")[-1]
+            ckpt_path = sorted(glob(f"{config.model_save_path}/*.pt"))[-1]
             ckpt = torch.load(ckpt_path)
             model.load_state_dict(ckpt['model_state_dict'])
             config.start_epoch = ckpt['epoch']
@@ -206,14 +210,13 @@ def main(config, local_rank, rank):
             # wandb.log({"ssim": ssim, "psnr": psnr, "clip_similarity": clip_similarity})
             wandb.log({"train_loss": train_loss})
 
-        if rank == 0 and (epoch + 1) % config.save_every_epoch:
-
+        if rank == 0 and (epoch + 1) % config.save_every_epoch == 0:
             torch.save({
                 'epoch': epoch,
                 'model_state_dict': model.module.state_dict(),
                 'optimizer_state_dict': optimizer.state_dict(),
                 'wandb_run_id': wandb.run.id
-            }, f"checkpoints/checkpoint_{epoch}.pt")
+            }, f"{config.model_save_path}/checkpoint_{epoch}.pt")
 
         lr_scheduler.step()
         epoch_progress.set_description(f"Epoch {epoch + 1}/{config.num_epochs} - train_loss: {train_loss:.4f}")
@@ -233,17 +236,18 @@ if __name__ == "__main__":
     torch.cuda.set_device(local_rank)
 
     config = Config.from_json(file_path="train_config.json")
+    os.makedirs(config.model_save_path, exist_ok=True)
     assert config.num_epochs % config.save_every_epoch == 0, "Total epochs must be divisible by save_every_epoch"
 
     final_model, optimizer = main(config, local_rank, rank)
-
+    os.makedirs("final_model_checkpoints", exist_ok=True)
     if rank == 0:
         torch.save({
             'epoch': config.num_epochs,
             'model_state_dict': final_model.module.state_dict(),
             'optimizer_state_dict': optimizer.state_dict(),
             'wandb_run_id': wandb.run.id
-        }, f"checkpoints/checkpoint_FINAL_{config.num_epochs}.pt")
+        }, f"final_model_checkpoints/checkpoint_FINAL_{config.num_epochs}.pt")
 
         wandb.finish()
 
