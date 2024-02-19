@@ -4,7 +4,7 @@ import torch.nn as nn
 
 from config import Config
 
-c = Config.from_json("train_config.json")
+c = Config.from_json("final_train_config.json")
 
 
 class ReconstructionLoss(nn.Module):

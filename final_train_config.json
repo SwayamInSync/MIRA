@@ -20,5 +20,6 @@
     "principal_point": 0.5,
     "supervision_k": 4,
     "model_preloading_strategy": "latest",
-    "model_save_path": "checkpoints"
+    "model_save_path": "checkpoints",
+    "data_dir": "temp_data/render"
 }

@@ -1,3 +1,0 @@
-# MIRA - Multimodal Image Reconstruction with Attention
-
-## Work in progress...

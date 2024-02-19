@@ -1,0 +1,75 @@
+{
+  "animation_count": 0,
+  "armature_count": 0,
+  "edge_count": 106498,
+  "file_size": 3848022,
+  "lamp_count": 1,
+  "lights": {
+    "bottom_light": {
+      "energy": 2.0,
+      "rotation": [
+        3.141590118408203,
+        0.0,
+        0.0
+      ],
+      "type": "SUN"
+    },
+    "fill_light": {
+      "energy": 3.0,
+      "rotation": [
+        0.785398006439209,
+        0.0,
+        2.3561899662017822
+      ],
+      "type": "SUN"
+    },
+    "key_light": {
+      "energy": 4.0,
+      "rotation": [
+        0.785398006439209,
+        0.0,
+        -0.785398006439209
+      ],
+      "type": "SUN"
+    },
+    "rim_light": {
+      "energy": 4.0,
+      "rotation": [
+        -0.785398006439209,
+        0.0,
+        -3.926990032196045
+      ],
+      "type": "SUN"
+    }
+  },
+  "linked_files": [],
+  "material_count": 0,
+  "mesh_count": 1,
+  "missing_textures": {
+    "count": 0,
+    "file_path_to_color": {},
+    "files": []
+  },
+  "object_count": 4,
+  "poly_count": 70789,
+  "random_color": [
+    0.32384275695616715,
+    0.26338057445300267,
+    0.7938358786474576,
+    1
+  ],
+  "scene_size": {
+    "bbox_max": [
+      0.9787811636924744,
+      1.3392544984817505,
+      0.8923878073692322
+    ],
+    "bbox_min": [
+      -0.5121419429779053,
+      -0.04580981284379959,
+      -0.8589559197425842
+    ]
+  },
+  "shape_key_count": 0,
+  "vert_count": 35709
+}
