@@ -57,7 +57,7 @@ class MIRAInference:
         image = pipeline_text2image(prompt, height=512, width=512).images[0]
         image = remove(image)
         image_arr = np.array(image)
-        image = torch.tensor(image_arr).permute(2, 0, 1).unsqueeze(0) / 255.0
+        image = torch.tensor(cv.cvtColor(image_arr, cv.COLOR_RGBA2RGB)).permute(2, 0, 1).unsqueeze(0) / 255.0
         self.image_mode(image)
 
     def image_mode(self, image):

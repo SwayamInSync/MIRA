@@ -43,6 +43,7 @@ valid_transforms = transforms.Compose([
 ])
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+assert config.data_dir != "", "Dataset directory is not specified in configuration"
 
 train_dataloader = get_loader(config.data_dir, train_transforms, batch_size)
 valid_dataloader = get_loader(config.data_dir, valid_transforms, batch_size, is_valid=True)
