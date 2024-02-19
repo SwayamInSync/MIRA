@@ -2,12 +2,13 @@ import math
 import torch
 import argparse
 import numpy as np
-# from PIL import Image
 import cv2 as cv
 import mcubes
 import trimesh
 import os
 import imageio
+from rembg import remove
+from diffusers import AutoPipelineForText2Image
 
 from models import MIRANet
 from config import Config
@@ -47,7 +48,16 @@ class MIRAInference:
             self.model.load_state_dict(torch.load(self.args.checkpoint_path)['model_state_dict'])
 
     def text_mode(self, prompt):
-        image = None  # todo: Use SDXL for image generation
+        pipeline_text2image = AutoPipelineForText2Image.from_pretrained(
+            "stabilityai/stable-diffusion-xl-base-1.0",
+            torch_dtype=torch.float16,
+            variant="fp16",
+            use_safetensors=True
+        ).to(self.device)
+        image = pipeline_text2image(prompt, height=512, width=512).images[0]
+        image = remove(image)
+        image_arr = np.array(image)
+        image = torch.tensor(image_arr).permute(2, 0, 1).unsqueeze(0) / 255.0
         self.image_mode(image)
 
     def image_mode(self, image):
@@ -113,7 +123,6 @@ class MIRAInference:
                     planes=planes,
                     grid_size=mesh_size,
                 )
-
                 vtx, faces = mcubes.marching_cubes(grid_out['sigma'].squeeze(0).squeeze(-1).cpu().numpy(), mesh_thres)
                 vtx = vtx / (mesh_size - 1) * 2 - 1
 
@@ -190,16 +199,15 @@ class MIRAInference:
             self.image_mode(input_)
 
 
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--checkpoint_path', type=str, default=None)
     parser.add_argument('--config_path', type=str, default="train_config.json")
     parser.add_argument('--mode', type=str, default='image', help="Support two modes 'text' and 'image'")
-    parser.add_argument('--input', type=str, default=None)
-    parser.add_argument('--output_path', type=str, default='output')
+    parser.add_argument('--input', type=str, default='temp_data/render/impeller/000.png')
+    parser.add_argument('--output_path', type=str, default='temp_op')
     parser.add_argument('--mesh_size', type=int, default=384)
-    parser.add_argument('--export_video', type=bool, default=True)
+    parser.add_argument('--export_video', type=bool, default=False)
     parser.add_argument('--export_mesh', type=bool, default=True)
     args = parser.parse_args()
     print(vars(args))
