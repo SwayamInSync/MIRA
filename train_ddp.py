@@ -54,11 +54,12 @@ def main(config, local_rank, rank):
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+    assert config.data_dir != "", "Dataset directory is not specified in configuration"
     train_ds = TrainObjaverseDataset(config.data_dir, train_transforms)
     train_dataloader = DataLoader(train_ds, batch_size=batch_size, shuffle=False,
                                   sampler=DistributedSampler(train_ds, shuffle=True), pin_memory=True)
 
-    val_ds = ValidObjaverseDataset(config.data_dir, valid_transforms)
+    # val_ds = ValidObjaverseDataset(config.data_dir, valid_transforms)
     # valid_dataloader = DataLoader(val_ds, batch_size=batch_size, shuffle=False, pin_memory=True)
 
     model = MIRANet(config.camera_embed_dim, config.decoder_hidden_dim, config.num_layers, config.num_heads,

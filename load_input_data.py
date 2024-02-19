@@ -327,7 +327,7 @@ def render_objects(
 if __name__ == "__main__":
     identifier = "https://github.com/mlivesu/LoopyCuts/blob/c36b81154a03e79208f83725b9f4542f30ee4285/test_data/impeller/impeller.obj"
     annotations = oxl.get_annotations(download_dir="data/annotations_data")
-    annotations = annotations[annotations['source'] == "github"].sample(4)
+    annotations = annotations[annotations['source'] == "github"]
     # annotations = annotations[(annotations['fileType'] == "obj") & (annotations['source'] == "github")][:10]
     annotations.to_csv("3D_data.csv", index=False)
     render_objects()
