@@ -8,7 +8,7 @@ import trimesh
 import os
 import imageio
 from rembg import remove
-from diffusers import AutoPipelineForText2Image
+# from diffusers import AutoPipelineForText2Image
 
 from models import MIRANet
 from config import Config
@@ -30,8 +30,7 @@ def images_to_video(images, output_path, fps):
 
 class MIRAInference:
     def __init__(self, args: argparse.Namespace):
-        # assert args.checkpoint_path is not None and config_path is not None, "checkpoint_path and config_path is
-        # required"
+        assert args.checkpoint_path is not None and args.config_path is not None, "checkpoint_path and config_path is required"
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.model_config = Config.from_json(args.config_path)
         self.args = args
@@ -202,14 +201,18 @@ class MIRAInference:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--checkpoint_path', type=str, default=None)
-    parser.add_argument('--config_path', type=str, default="train_config.json")
+    parser.add_argument('--config_path', type=str, default=None)
     parser.add_argument('--mode', type=str, default='image', help="Support two modes 'text' and 'image'")
     parser.add_argument('--input', type=str, default='temp_data/render/impeller/000.png')
     parser.add_argument('--output_path', type=str, default='temp_op')
     parser.add_argument('--mesh_size', type=int, default=384)
-    parser.add_argument('--export_video', type=bool, default=False)
-    parser.add_argument('--export_mesh', type=bool, default=True)
+    parser.add_argument('--export_video', action='store_true')
+    parser.add_argument('--export_mesh', action='store_true')
     args = parser.parse_args()
     print(vars(args))
-    infer = MIRAInference(args)
-    infer(args.mode, args.input)
+    # infer = MIRAInference(args)
+    # infer(args.mode, args.input)
+
+'''
+python test.py --checkpoint_path=<path to model checkpoint> --config_path=<path to config.json file> --mode=<text/image> --input=<prompt/image_path> --output_path=<path to output directory> --export_video --export_mesh
+'''

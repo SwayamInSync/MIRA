@@ -77,22 +77,6 @@ def sample_from_planes(plane_axes, plane_features, coordinates, mode='bilinear',
     return output_features
 
 
-def sample_from_3dgrid(grid, coordinates):
-    """
-    Expects coordinates in shape (batch_size, num_points_per_batch, 3)
-    Expects grid in shape (1, channels, H, W, D)
-    (Also works if grid has batch size)
-    Returns sampled features of shape (batch_size, num_points_per_batch, feature_channels)
-    """
-    batch_size, n_coords, n_dims = coordinates.shape
-    sampled_features = torch.nn.functional.grid_sample(grid.expand(batch_size, -1, -1, -1, -1),
-                                                       coordinates.reshape(batch_size, 1, 1, -1, n_dims),
-                                                       mode='bilinear', padding_mode='zeros', align_corners=False)
-    N, C, H, W, D = sampled_features.shape
-    sampled_features = sampled_features.permute(0, 4, 3, 2, 1).reshape(N, H * W * D, C)
-    return sampled_features
-
-
 class ImportanceRenderer(torch.nn.Module):
     """
     Modified original version to filter out-of-box samples as TensoRF does.
