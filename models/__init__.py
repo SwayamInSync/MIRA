@@ -1,1 +1,1 @@
-from .transformer import Network
+from .transformer import MIRANet

@@ -101,7 +101,7 @@ if __name__ == "__main__":
     from torchvision import transforms
     from config import Config
 
-    c = Config.from_json("train_config.json")
+    c = Config.from_json("final_train_config.json")
     train_transforms = transforms.Compose([
         transforms.Resize((c.source_size, c.source_size)),
         transforms.ToTensor()

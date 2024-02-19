@@ -20,7 +20,7 @@ from torch.nn.parallel import DistributedDataParallel
 from torch.distributed import init_process_group, destroy_process_group
 
 from config import Config
-from models import Network
+from models import MIRANet
 from combined_loss import ReconstructionLoss
 from dataset import TrainObjaverseDataset, ValidObjaverseDataset
 
@@ -54,14 +54,14 @@ def main(config, local_rank, rank):
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    train_ds = TrainObjaverseDataset("temp_data/render", train_transforms)
+    train_ds = TrainObjaverseDataset(config.data_dir, train_transforms)
     train_dataloader = DataLoader(train_ds, batch_size=batch_size, shuffle=False,
                                   sampler=DistributedSampler(train_ds, shuffle=True), pin_memory=True)
 
-    val_ds = ValidObjaverseDataset("temp_data/render", valid_transforms)
+    val_ds = ValidObjaverseDataset(config.data_dir, valid_transforms)
     # valid_dataloader = DataLoader(val_ds, batch_size=batch_size, shuffle=False, pin_memory=True)
 
-    model = Network(config.camera_embed_dim, config.decoder_hidden_dim, config.num_layers, config.num_heads,
+    model = MIRANet(config.camera_embed_dim, config.decoder_hidden_dim, config.num_layers, config.num_heads,
                     config.triplane_feat_res, config.triplane_res, config.triplane_dim,
                     config.rendering_samples_per_ray,
                     config.camera_matrix_dim).to(device)

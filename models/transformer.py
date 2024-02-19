@@ -46,10 +46,10 @@ class Transformer(nn.Module):
         return planes
 
 
-class Network(nn.Module):
+class MIRANet(nn.Module):
     def __init__(self, camera_embed_dim, hidden_dim, num_layers, num_heads,
                  triplane_feat_res, triplane_res, triplane_dim, rendering_samples_per_ray, camera_matrix_dim):
-        super(Network, self).__init__()
+        super(MIRANet, self).__init__()
         self.transformer = Transformer(camera_embed_dim, hidden_dim, num_layers, num_heads, triplane_feat_res,
                                        triplane_res, triplane_dim, camera_matrix_dim)
         self.renderer = TriplaneSynthesizer(triplane_dim, rendering_samples_per_ray)
@@ -67,14 +67,14 @@ class Network(nn.Module):
 if __name__ == "__main__":
     from config import Config
 
-    model_config = Config.from_json("../train_config.json")
+    model_config = Config.from_json("../final_train_config.json")
 
     img = torch.randn(1, 3, model_config.source_size, model_config.source_size)
     src_cam = torch.randn(1, model_config.camera_matrix_dim)
     render_cams = torch.randn(1, 2, 25)
     render_size = model_config.render_size
 
-    net = Network(model_config.camera_embed_dim, model_config.decoder_hidden_dim,
+    net = MIRANet(model_config.camera_embed_dim, model_config.decoder_hidden_dim,
                   model_config.num_layers, model_config.num_heads, model_config.triplane_feat_res,
                   model_config.triplane_res, model_config.triplane_dim, model_config.rendering_samples_per_ray,
                   model_config.camera_matrix_dim)

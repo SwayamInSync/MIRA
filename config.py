@@ -5,7 +5,7 @@ class Config:
     def __init__(self, camera_matrix_dim, camera_embed_dim, decoder_hidden_dim, num_layers, num_heads,
                  weight_decay, learning_rate, batch_size, triplane_feat_res, triplane_res, triplane_dim,
                  rendering_samples_per_ray, render_size, source_size, lpips_net, num_epochs, save_every_epoch,
-                 focal_length, principal_point, supervision_k, model_preloading_strategy, model_save_path):
+                 focal_length, principal_point, supervision_k, model_preloading_strategy, model_save_path, data_dir):
         self.camera_matrix_dim = camera_matrix_dim
         self.camera_embed_dim = camera_embed_dim
         self.decoder_hidden_dim = decoder_hidden_dim
@@ -28,6 +28,7 @@ class Config:
         self.supervision_k = supervision_k
         self.model_preloading_strategy = model_preloading_strategy
         self.model_save_path = model_save_path
+        self.data_dir = data_dir
 
 
     @classmethod
@@ -47,5 +48,5 @@ class Config:
 
 
 if __name__ == "__main__":
-    config = Config.from_json("train_config.json")
+    config = Config.from_json("final_train_config.json")
     print(config)
