@@ -10,7 +10,7 @@ It is highly efficient and adaptable, capable of handling a wide range of multi-
 
 | Image                                                        | Prompt                               | 3D generation                                                |
 | ------------------------------------------------------------ | ------------------------------------ | ------------------------------------------------------------ |
-| <img src="https://raw.githubusercontent.com/SwayamInSync/MIRA/main/assets/water_can.png" width=128 height="128"> | None                                 | <video src="https://github.com/SwayamInSync/MIRA/raw/main/assets/water_can.mov"> |
+| <img src="https://raw.githubusercontent.com/SwayamInSync/MIRA/main/assets/water_can.png" width=128 height="128"> | None                                 | <img src="https://github.com/SwayamInSync/MIRA/raw/main/assets/water_can.mov"> |
 | <img src="https://github.com/SwayamInSync/MIRA/blob/main/assets/girl.png?raw=true" width=128 height="128"> | None                                 | <img src="https://github.com/SwayamInSync/MIRA/raw/main/assets/girl.mov"> |
 | <img src="https://github.com/SwayamInSync/MIRA/blob/main/assets/cat.png?raw=true" width=128 height="128"> | A photograph of cat sitting on table | <img src="https://github.com/SwayamInSync/MIRA/raw/main/assets/cat.mov"> |
 | <img src="https://github.com/SwayamInSync/MIRA/blob/main/assets/lamp.png?raw=true" width=128 height=128> | None                                 | <img src="https://github.com/SwayamInSync/MIRA/raw/main/assets/lamp.mov"> |
